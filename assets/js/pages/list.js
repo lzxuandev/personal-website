@@ -94,7 +94,7 @@
         { title: 'The Boss Baby 2', image: ''},
         { title: 'Ice Age', image: 'https://m.media-amazon.com/images/M/MV5BMDBlYzU2OGMtOGJjNi00ZGZjLWIwNjMtYzdiZjkwYWNjZDljXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg'},
         { title: 'Inside out', image: ''},
-        { title: 'The Powerpuff Girls', image: ''}
+        { title: 'The Powerpuff Girls', image: ''},
       ],
     },
     {
@@ -256,7 +256,6 @@
         { title: 'A Chinese Odyssey: Part 2 - Cinderella (1995)', image: ''},
         { title: 'The Amazing Spider-Man (2012)', image: ''},
         { title: 'The Smurfs (2011)', image: ''},
-
       ],
     },
     {
