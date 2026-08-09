@@ -251,6 +251,9 @@
         { title: 'Weapons(2025)', image: ''},
         { title: 'A Nightmare on Elm Street(2010)', image: ''},
         { title: 'Lucy(2014)', image: ''},
+        { title: 'A Chinese Odyssey: Part One - Pandora's Box (1995)', image: ''},
+        { title: 'A Chinese Odyssey: Part 2 - Cinderella (1995)', image: ''},
+        { title: 'The Amazing Spider-Man (2012)', image: ''},
 
       ],
     },
