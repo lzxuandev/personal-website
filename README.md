@@ -1,11 +1,15 @@
 <h1 align="center">lzx</h1>
 
+
 <p align="center">A personal website</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-orange"/>
   <img src="https://img.shields.io/badge/Powered%20by-Vanilla-blue"/>
 </p>
+
+<img width="991" height="311" alt="image" src="https://github.com/user-attachments/assets/d9cfa4f2-ceed-414a-b901-38f1f125d0e3" />
+
 
 ## Tech Stacks
 
