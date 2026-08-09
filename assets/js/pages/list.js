@@ -100,6 +100,7 @@
       id: 'movie',
       title: 'Movie',
       items: [
+        { title: 'Spider-Man: Brand New Day (2026)', image: ''},
         { title: 'Maleficent', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7xsX8GckJEa28w_TsjdC6lgo-wyvsNTW4lW80qf_lJYNzGZGNgsmTbQh_jf_N9LL7G4vP&s=10'},
         { title: 'Kingsman: The Secret Service', image: ''},
         { title: 'The Greatest Showman', image: ''},
