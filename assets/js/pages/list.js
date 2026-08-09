@@ -1,4 +1,5 @@
 (function () {
+  // ===================== DATA =====================
   var categories = [
     {
       id: 'anime',
@@ -252,7 +253,7 @@
         { title: 'Weapons(2025)', image: ''},
         { title: 'A Nightmare on Elm Street(2010)', image: ''},
         { title: 'Lucy(2014)', image: ''},
-        { title: 'A Chinese Odyssey: Part One - Pandora's Box (1995)', image: ''},
+        { title: 'A Chinese Odyssey: Part One - Pandora\'s Box (1995)', image: ''},
         { title: 'A Chinese Odyssey: Part 2 - Cinderella (1995)', image: ''},
         { title: 'The Amazing Spider-Man (2012)', image: ''},
         { title: 'The Smurfs (2011)', image: ''},
@@ -292,6 +293,16 @@
     },
   ];
 
+  // ===================== CONFIGURATION =====================
+  var CONFIG = {
+    IMAGES_PER_ROW: 8,
+    MAX_CONCURRENT_FETCHES: 3,
+    CACHE_DURATION: 7 * 24 * 60 * 60 * 1000, // 7 days
+    RETRY_DELAY: 1000,
+    MAX_RETRIES: 3,
+  };
+
+  // ===================== STATE =====================
   var gradients = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
@@ -299,238 +310,4 @@
     'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
     'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
     'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
-    'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
-    'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
-    'linear-gradient(135deg, #f5576c 0%, #ff6f91 100%)',
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  ];
-
-  var coverCache = new Map();
-  var pendingCovers = new Map();
-
-  try {
-    var saved = localStorage.getItem('wiki_cover_cache');
-    if (saved) {
-      var parsed = JSON.parse(saved);
-      for (var key in parsed) {
-        coverCache.set(key, parsed[key]);
-      }
-    }
-  } catch (e) {}
-
-  function saveCoverCache() {
-    try {
-      var obj = {};
-      coverCache.forEach(function (v, k) { if (v !== null) obj[k] = v; });
-      localStorage.setItem('wiki_cover_cache', JSON.stringify(obj));
-    } catch (e) {}
-  }
-
-  function fetchIMDbCover(title) {
-    if (coverCache.has('imdb:' + title)) return Promise.resolve(coverCache.get('imdb:' + title));
-
-    var firstChar = title.charAt(0).toLowerCase();
-    var cbName = 'imdb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    var url = 'https://v2.sg.media-imdb.com/suggestion/' + firstChar + '/'
-      + encodeURIComponent(title) + '.json?callback=' + cbName;
-
-    return new Promise(function (resolve) {
-      window[cbName] = function (data) {
-        delete window[cbName];
-        var imgUrl = null;
-        if (data && data.d && data.d.length > 0) {
-          var item = data.d[0];
-          if (item.i && item.i.imageUrl) imgUrl = item.i.imageUrl;
-        }
-        coverCache.set('imdb:' + title, imgUrl);
-        resolve(imgUrl);
-      };
-      var script = document.createElement('script');
-      script.src = url;
-      script.onerror = function () { delete window[cbName]; coverCache.set('imdb:' + title, null); resolve(null); };
-      document.head.appendChild(script);
-    });
-  }
-
-  function searchWikipedia(title) {
-    var url = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='
-      + encodeURIComponent(title) + '&format=json&origin=*&srlimit=1&srprop=';
-    return fetch(url).then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (data) {
-        if (data && data.query && data.query.search && data.query.search.length > 0) {
-          return data.query.search[0].title;
-        }
-        return null;
-      });
-  }
-
-  function fetchCover(title) {
-    if (coverCache.has(title)) return Promise.resolve(coverCache.get(title));
-    if (pendingCovers.has(title)) return pendingCovers.get(title);
-
-    var p = fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title))
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (data) {
-        if (data && data.originalimage && data.originalimage.source) {
-          return data.originalimage.source;
-        }
-        return searchWikipedia(title).then(function (found) {
-          if (!found || found === title) return null;
-          return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(found))
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) {
-              return (d && d.originalimage && d.originalimage.source) ? d.originalimage.source : null;
-            });
-        });
-      })
-      .then(function (url) {
-        coverCache.set(title, url);
-        return url;
-      })
-      .catch(function () {
-        coverCache.set(title, null);
-        return null;
-      });
-
-    pendingCovers.set(title, p);
-    return p;
-  }
-
-  function escapeHtml(text) {
-    var d = document.createElement('div');
-    d.textContent = text;
-    return d.innerHTML;
-  }
-
-  function renderSection(category, index) {
-    var html = '<div class="list-section" data-category="' + category.id + '">'
-      + '<h2 class="list-section-title">' + escapeHtml(category.title) + '</h2>'
-      + '<div class="list-scroll-wrapper">'
-      + '<button class="list-arrow list-arrow-left" data-target="' + category.id + '">'
-      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>'
-      + '</button>'
-      + '<div class="list-scroll-container" id="scroll-' + category.id + '">';
-
-    for (var i = 0; i < category.items.length; i++) {
-      var item = category.items[i];
-      var imdb = coverCache.get('imdb:' + item.title);
-      var wiki = coverCache.get(item.title);
-      var hasImage = !!(item.image || imdb || wiki);
-      var imgUrl = item.image || imdb || wiki;
-      var bg = hasImage ? "url('" + imgUrl + "')" : gradients[(index + i) % gradients.length];
-      html += '<div class="list-item" id="list-item-' + category.id + '-' + i + '">'
-        + '<div class="list-item-cover' + (hasImage ? '' : ' list-item-cover-gradient') + '"'
-        + ' style="background-image: ' + bg + '; background-size: cover; background-position: center;">'
-        + (hasImage ? '' : '<svg class="list-item-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2.18"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/></svg>')
-        + '</div>'
-        + '<div class="list-item-title">' + escapeHtml(item.title) + '</div>'
-        + '</div>';
-    }
-
-    html += '</div>'
-      + '<button class="list-arrow list-arrow-right" data-target="' + category.id + '">'
-      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>'
-      + '</button>'
-      + '</div>'
-      + '</div>';
-
-    return html;
-  }
-
-  function updateCover(el, url) {
-    var cover = el.querySelector('.list-item-cover');
-    if (!cover) return;
-    var grad = cover.style.backgroundImage;
-    cover.style.backgroundImage = "url('" + url + "'), " + grad;
-    cover.classList.remove('list-item-cover-gradient');
-    var icon = cover.querySelector('.list-item-icon');
-    if (icon) icon.remove();
-  }
-
-  function fetchAllCovers() {
-    var allItems = [];
-    for (var c = 0; c < categories.length; c++) {
-      for (var i = 0; i < categories[c].items.length; i++) {
-        allItems.push({ catId: categories[c].id, index: i, item: categories[c].items[i] });
-      }
-    }
-
-    var active = 0;
-
-    function done() {
-      active--;
-      if (allItems.length > 0) {
-        processNext(allItems.shift());
-      } else if (active === 0) {
-        saveCoverCache();
-      }
-    }
-
-    function processNext(info) {
-      if (info.item.image) { done(); return; }
-
-      var imdbCached = coverCache.get('imdb:' + info.item.title);
-      var wikiCached = coverCache.get(info.item.title);
-      var el = document.getElementById('list-item-' + info.catId + '-' + info.index);
-
-      if (imdbCached) { if (el) updateCover(el, imdbCached); done(); return; }
-
-      // IMDb already failed, try Wikipedia directly
-      if (imdbCached === null) {
-        if (wikiCached !== undefined) { done(); return; }
-        active++;
-        fetchCover(info.item.title).then(function (wikiUrl) {
-          if (wikiUrl && el) updateCover(el, wikiUrl);
-          done();
-        });
-        return;
-      }
-
-      active++;
-      fetchIMDbCover(info.item.title).then(function (imdbUrl) {
-        if (imdbUrl && el) { updateCover(el, imdbUrl); done(); return; }
-        if (wikiCached !== undefined) { done(); return; }
-        fetchCover(info.item.title).then(function (wikiUrl) {
-          if (wikiUrl && el) updateCover(el, wikiUrl);
-          done();
-        });
-      });
-    }
-
-    for (var i = 0; i < 3 && allItems.length > 0; i++) {
-      processNext(allItems.shift());
-    }
-  }
-
-  function renderList() {
-    var container = document.getElementById('list-content');
-    if (!container) return;
-
-    var html = '';
-    for (var i = 0; i < categories.length; i++) {
-      html += renderSection(categories[i], i);
-    }
-    container.innerHTML = html;
-
-    document.querySelectorAll('.list-arrow').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var target = document.getElementById('scroll-' + btn.getAttribute('data-target'));
-        if (!target) return;
-        var itemWidth = target.querySelector('.list-item')?.offsetWidth || 140;
-        var gap = 12;
-        var dir = btn.classList.contains('list-arrow-left') ? -1 : 1;
-        target.scrollBy({ left: dir * (itemWidth + gap) * 8, behavior: 'smooth' });
-      });
-    });
-
-    fetchAllCovers();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderList);
-  } else {
-    renderList();
-  }
-
-  document.addEventListener('page:swapped', renderList);
-})();
+    'linear
