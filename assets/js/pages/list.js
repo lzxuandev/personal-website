@@ -302,6 +302,8 @@
         { title: '最伟大的作品', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI_eIUut7SSuwWsUFaJxgU21gR7HZOUoM0TCvG3d3fiw&s=10' },
         { title: 'River Flows in You', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNOLS5zAlJQeBQlICLt4eFSiLRGgcikdGwZMNPukpfFA&s=10' },
         { title: 'Clair de Lune', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObwVTCPD1b0DbxGcHPhzohbUQfh4W2RQLsa126le1lg&s=10' },
+        { title: 'Für Elise', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmVxt5AcJJQKitQspEmjRLVjYeehyvQWZLDru4WcHZaw&s=10'},
+        { title: 'Dear Emil', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcN_q2eSYCyx5ygbmeukpGCqCsl_ASNc6ymFsVLESH5Q&s=10'},
       ],
     },
     
