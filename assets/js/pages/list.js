@@ -291,6 +291,20 @@
         { title: '你一生的故事', image: 'https://book.goldenhouse.com.my/wp-content/uploads/2023/03/niyishengdegushi-820x820.jpg'},
       ],
     },
+
+    {
+      id: 'piano',
+      title: 'Piano',
+      items: [
+        { title: 'Nuvole Bianche', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQXbz-sGrdwJ9AmWPRr4iDp2MWJVoEefLpn_9O8ddNGQ&s=10' },
+        { title: 'Canon in D', image: 'https://i1.sndcdn.com/artworks-000222653975-rwu5fb-t500x500.jpg' },
+        { title: 'Mariage d\'Amour', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtZ-FDkU9NqHsKX8S6vlegaMW6x4TNKD48Is-6NmVvyg&s=10' },
+        { title: '最伟大的作品 - 周杰伦', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI_eIUut7SSuwWsUFaJxgU21gR7HZOUoM0TCvG3d3fiw&s=10' },
+        { title: 'River Flows in You', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNOLS5zAlJQeBQlICLt4eFSiLRGgcikdGwZMNPukpfFA&s=10' },
+        { title: 'Clair de Lune', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObwVTCPD1b0DbxGcHPhzohbUQfh4W2RQLsa126le1lg&s=10' },
+      ],
+    },
+    
   ];
 
   var gradients = [
