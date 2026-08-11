@@ -272,7 +272,7 @@
         { title: 'WandaVision', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7l5fnpdMP1Mb23WhV7Qd2765UYtOKVxfQ3wQ1Dw_KTE6zt6B4jrY7yD-o71sRXUSwrqEU-fq6WkNbKt-IjzBTz1-NK0FPN9CNcwMwDQ&s=10' },
         { title: 'Three-Body', image: '' },
         { title: 'Put Your Head on My Shoulder', image: 'https://upload.wikimedia.org/wikipedia/zh/4/42/Put_your_head_on_my_shoulder.jpg' },
-
+        { title: 'The King\'s Avatar', image: ''},
       ],
     },
     {
